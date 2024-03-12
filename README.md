@@ -57,4 +57,4 @@ You're ready to go! Visit the url in your browser, and login with:
 -   **Username:** meowadmin@meow.dev
 -   **Password:** password
 
-[Follow my instagram](https://instagram.com/mframadann) Let's connect with me on instagram!
+Let's connect with me on [instagram](https://instagram.com/mframadann)!
