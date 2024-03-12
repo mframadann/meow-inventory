@@ -16,6 +16,12 @@ return new class () extends Migration {
             $table->string("name");
             $table->timestamps();
         });
+
+
+        Schema::table("products", function (Blueprint $table) {
+            $table->foreignUuid("category_id")->nullable()->references("category_id")->on("product_categories")->nullOnDelete();
+        });
+
     }
 
     /**
