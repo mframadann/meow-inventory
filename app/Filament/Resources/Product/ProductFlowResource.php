@@ -73,7 +73,7 @@ class ProductFlowResource extends Resource
 
             ])
             ->filters([
-                SelectFilter::make('type')->label("Mutation Type")->options([
+                SelectFilter::make('type')->label("Mutation type")->options([
                     "IN" => "IN",
                     "OUT" => "OUT"
                 ])
