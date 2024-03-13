@@ -6,6 +6,7 @@ use App\Filament\Resources\Product\ProductCategoryResource\Pages;
 use App\Filament\Resources\Product\ProductCategoryResource\RelationManagers;
 use App\Models\ProductCategory;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,7 +26,7 @@ class ProductCategoryResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make("name")->maxLength(255)->required()->columnSpanFull()
             ]);
     }
 
@@ -33,8 +34,8 @@ class ProductCategoryResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make("name"),
-                TextColumn::make("products_count")->counts("products"),
+                TextColumn::make("name")->searchable(),
+                TextColumn::make("products_count")->counts("products")->sortable(),
                 TextColumn::make("created_at")->datetime(),
                 TextColumn::make("updated_at")->datetime(),
             ])
