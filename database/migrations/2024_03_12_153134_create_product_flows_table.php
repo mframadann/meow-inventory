@@ -17,7 +17,7 @@ return new class () extends Migration {
             $table->unsignedInteger("amount")->default(0);
             $table->text("desc")->nullable()->default("-");
             $table->foreignUuid("product_id")->references("product_id")->on("products")->cascadeOnDelete();
-            $table->timestamps();
+            $table->datetime("mutate_at");
         });
     }
 

@@ -14,7 +14,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -46,9 +48,20 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([ImageColumn::make('img_url')->label('Product Photo'), TextColumn::make('name')->searchable(), TextColumn::make('description')->default('-'), TextColumn::make('price')->money('IDR')->sortable()])
+            ->columns([
+                ImageColumn::make('img_url')->label('Product Photo'),
+                TextColumn::make('name')->searchable(),
+                TextColumn::make('description')->default('-'),
+                TextColumn::make('price')->money('IDR')->sortable(),
+                TextColumn::make("category.name"),
+                TextColumn::make("flows.amount")->label("Stocks Avaible")->getStateUsing(function ($record) {
+                    $in = $record->flows()->where("type", "IN")->sum("amount");
+                    $out = $record->flows()->where("type", "OUT")->sum("amount");
+                    return $in - $out;
+                })
+            ])
             ->filters([
-                //
+                SelectFilter::make('category_id')->label("Product Category")->relationship('category', 'name')
             ])
             ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);

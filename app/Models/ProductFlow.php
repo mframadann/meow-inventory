@@ -11,9 +11,10 @@ class ProductFlow extends Model
 {
     use HasFactory;
     use HasUuids;
-
+    public $timestamps = false;
     protected $primaryKey = "pf_id";
     protected $keyType = "string";
+
 
 
     public function product(): BelongsTo
