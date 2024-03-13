@@ -14,7 +14,7 @@ return new class () extends Migration {
         Schema::create('product_flows', function (Blueprint $table) {
             $table->uuid("pf_id")->primary()->nullable()->default(Str::uuid());
             $table->enum("type", ["IN", "OUT", "MUTATE"])->default("MUTATE");
-            $table->integer("amount")->default(0);
+            $table->unsignedInteger("amount")->default(0);
             $table->text("desc")->nullable()->default("-");
             $table->foreignUuid("product_id")->references("product_id")->on("products")->cascadeOnDelete();
             $table->timestamps();

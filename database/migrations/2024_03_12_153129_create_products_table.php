@@ -16,7 +16,7 @@ return new class () extends Migration {
             $table->string("name");
             $table->string("img_url");
             $table->text("description")->nullable()->default("-");
-            $table->integer("price")->default(0);
+            $table->unsignedInteger("price")->default(0);
             $table->timestamps();
         });
     }
