@@ -34,16 +34,16 @@ Run database migrations:
 php artisan migrate
 ```
 
-Run database seeder:
-
-```sh
-php artisan db:seed
-```
-
 Create a symlink to the storage:
 
 ```sh
 php artisan storage:link
+```
+
+Create an admin user:
+
+```sh
+php artisan make:filament-user
 ```
 
 Run the dev server (the output will give the address):
@@ -51,10 +51,5 @@ Run the dev server (the output will give the address):
 ```sh
 php artisan serve
 ```
-
-You're ready to go! Visit the url in your browser, and login with:
-
--   **Username:** meowadmin@meow.dev
--   **Password:** password
 
 Let's connect with me on [instagram](https://instagram.com/mframadann)!
