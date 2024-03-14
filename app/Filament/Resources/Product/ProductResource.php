@@ -5,17 +5,16 @@ namespace App\Filament\Resources\Product;
 use App\Filament\Resources\Product\ProductResource\Pages;
 use App\Filament\Resources\Product\ProductResource\RelationManagers;
 use App\Models\Product;
-use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Pages\Page;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -25,11 +24,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
-    protected static ?string $slug = "product/lists";
-
-
-    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $slug = 'product/lists';
     protected static ?string $navigationGroup = 'Product';
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     public static function form(Form $form): Form
     {
@@ -43,8 +40,8 @@ class ProductResource extends Resource
                 ->searchable()
                 ->createOptionForm([TextInput::make('name')->label('Category Name')->required()])
                 ->columnSpanFull(),
-            Textarea::make("description")->label("Product Desctiption")->default("-")->columnSpanFull(),
-            FileUpload::make('img_url')->label("Product Photo")->required()->columnSpanFull()
+            Textarea::make('description')->label('Product Desctiption')->default('-')->columnSpanFull(),
+            FileUpload::make('img_url')->label('Product Photo')->required()->columnSpanFull(),
         ]);
     }
 
@@ -66,15 +63,24 @@ class ProductResource extends Resource
             ->filters([
                 SelectFilter::make('category_id')->label("Product Category")->relationship('category', 'name')
             ])
-            ->actions([Tables\Actions\ViewAction::make(),Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
+            ->actions([Tables\Actions\ViewAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
 
     public static function getRelations(): array
     {
         return [
-                //
+                RelationManagers\FlowsRelationManager::class,
             ];
+    }
+
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            Pages\ViewProduct::class,
+            Pages\EditProduct::class,
+        ]);
     }
 
     public static function getPages(): array
@@ -82,6 +88,7 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
+            'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
