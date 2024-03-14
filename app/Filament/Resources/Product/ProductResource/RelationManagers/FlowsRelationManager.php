@@ -42,7 +42,7 @@ class FlowsRelationManager extends RelationManager
 
     public function isReadOnly(): bool
     {
-        return false;
+        return true;
     }
 
     public function table(Table $table): Table
