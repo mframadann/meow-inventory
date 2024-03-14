@@ -59,13 +59,7 @@ class ProductFlowResource extends Resource
                                  titleAttribute: 'name',
                                  modifyQueryUsing: function (Builder $query) {
                                      $query
-                                         ->whereHas('flows', function ($q) {
-                                             $q->where('type', 'IN');
-                                         })
-                                         ->whereHas('flows', function ($q) {
-                                             $q->where('type', 'OUT');
-                                         })
-                                         ->whereRaw('((SELECT sum(amount) FROM tb_product_flows WHERE tb_products.product_id = tb_product_flows.product_id AND type = "IN") - (SELECT sum(amount) FROM tb_product_flows WHERE tb_products.product_id = tb_product_flows.product_id AND type = "OUT")) > 0');
+                                         ->whereRaw('COALESCE((SELECT SUM(amount) FROM tb_product_flows WHERE tb_products.product_id = tb_product_flows.product_id AND type = "IN"), 0) - COALESCE((SELECT SUM(amount) FROM tb_product_flows WHERE tb_products.product_id = tb_product_flows.product_id AND type = "OUT"), 0) > 0');
                                  },
                              )
                              ->preload()
