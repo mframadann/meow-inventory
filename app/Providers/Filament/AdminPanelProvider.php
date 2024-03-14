@@ -52,7 +52,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])->databaseNotifications();
+            ])->databaseNotifications()
+            ->brandLogo(asset("logo.svg"))->brandLogoHeight('3.5rem')->favicon(asset('favicon.ico'));
         ;
     }
 }
