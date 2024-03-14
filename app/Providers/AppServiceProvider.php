@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Filament\Actions\Exports\Models\Export;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+        Export::polymorphicUserRelationship();
     }
 }
