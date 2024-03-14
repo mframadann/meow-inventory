@@ -16,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductFlowResource extends Resource
 {
     protected static ?string $model = ProductFlow::class;
-
+    protected static ?string $slug = 'product/mutations';
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
     protected static ?string $navigationGroup = 'Product';
 
@@ -32,7 +33,7 @@ class ProductFlowResource extends Resource
     {
         return $form->schema([
             TextInput::make('amount')->required()->maxLength(255),
-            DateTimePicker::make("mutate_at")->label("Mutation Date")->maxDate(now())->required(),
+            DateTimePicker::make('mutate_at')->label('Mutation Date')->maxDate(now())->required(),
             Select::make('type')
                 ->options([
                     'IN' => 'In',
@@ -44,12 +45,7 @@ class ProductFlowResource extends Resource
                 ->relationship('product', 'name')
                 ->preload()
                 ->searchable()
-                ->createOptionForm([
-                    TextInput::make("name")->maxLength(255)->required(),
-                    TextInput::make("price")->numeric()->prefix("Rp")->required(),
-                    Textarea::make("description")->label("Product Description"),
-                    FileUpload::make('img_url')->label("Product Image")->required(),
-                ])
+                ->createOptionForm([TextInput::make('name')->maxLength(255)->required(), TextInput::make('price')->numeric()->prefix('Rp')->required(), Textarea::make('description')->label('Product Description'), FileUpload::make('img_url')->label('Product Image')->required()])
                 ->required(),
             Textarea::make('desc')->maxLength(16345)->required()->columnSpanFull(),
         ]);
@@ -59,24 +55,31 @@ class ProductFlowResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make("product.name")->searchable(),
-                TextColumn::make("amount"),
-                TextColumn::make("desc"),
-                TextColumn::make("type")
+                TextColumn::make('product.name')->searchable(),
+                TextColumn::make('amount'),
+                TextColumn::make('desc'),
+                TextColumn::make('type')
                     ->badge()
                     ->getStateUsing(fn (ProductFlow $record): string => $record->type)
                     ->colors([
                         'success' => 'IN',
-                        'danger' => "OUT"
+                        'danger' => 'OUT',
                     ]),
-                TextColumn::make("mutate_at")->dateTime()->sortable()
-
+                TextColumn::make('mutate_at')->dateTime()->sortable(),
             ])
             ->filters([
-                SelectFilter::make('type')->label("Mutation type")->options([
-                    "IN" => "IN",
-                    "OUT" => "OUT"
-                ])
+                SelectFilter::make('type')
+                    ->label('Mutation type')
+                    ->options([
+                        'IN' => 'IN',
+                        'OUT' => 'OUT',
+                    ]),
+                SelectFilter::make('product')->relationship('product', 'name'),
+                Filter::make('mutate_at')
+                    ->form([DatePicker::make('mutate_at')])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['mutate_at'], fn (Builder $query, $date): Builder => $query->whereDate('mutate_at', '>=', $date));
+                    }),
             ])
             ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);

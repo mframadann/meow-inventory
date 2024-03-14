@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Product;
 use App\Filament\Resources\Product\ProductResource\Pages;
 use App\Filament\Resources\Product\ProductResource\RelationManagers;
 use App\Models\Product;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -24,6 +25,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+    protected static ?string $slug = "product/lists";
+
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     protected static ?string $navigationGroup = 'Product';
@@ -63,7 +66,7 @@ class ProductResource extends Resource
             ->filters([
                 SelectFilter::make('category_id')->label("Product Category")->relationship('category', 'name')
             ])
-            ->actions([Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
+            ->actions([Tables\Actions\ViewAction::make(),Tables\Actions\EditAction::make(), Tables\Actions\DeleteAction::make()])
             ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
     }
 
